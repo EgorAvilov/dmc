@@ -16,13 +16,13 @@ import java.util.Map;
 
 public class JwtTokenFilter extends OncePerRequestFilter {
 
-    JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public JwtTokenFilter(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    public static void responseEntityToHttpServletResponse(ResponseEntity<Object> responseEntity, HttpServletResponse response)
+    public static void HttpServletResponse(ResponseEntity<Object> responseEntity, HttpServletResponse response)
             throws IOException {
         for (Map.Entry<String, List<String>> header : responseEntity.getHeaders()
                                                                     .entrySet()) {
@@ -50,7 +50,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             }
         } catch (JwtAuthenticationException e) {
             logger.error(e.getMessage());
-            responseEntityToHttpServletResponse(new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED ), response);
+            HttpServletResponse(new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED), response);
             return;
         }
         filterChain.doFilter(request, response);

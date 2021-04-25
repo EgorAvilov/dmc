@@ -46,11 +46,13 @@ public class JwtTokenProvider {
         return new BCryptPasswordEncoder();
     }
 
+
     @PostConstruct
     protected void init() {
         secret = Base64.getEncoder()
                        .encodeToString(secret.getBytes());
     }
+
 
     public String createToken(String username, List<Role> roles) {
         Claims claims = Jwts.claims()

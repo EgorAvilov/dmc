@@ -13,25 +13,23 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 
-@RestController
-@RequestMapping(value = "/api")
+@Controller
+@RequestMapping(value = "/auth")
 public class AuthenticationController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationController.class);
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
     private final UserService userService;
-    private static final String USER_WITH_USERNAME_MESSAGE = "User with username: ";
-    private static final String NOT_FOUND_MESSAGE = " not found";
 
     @Autowired
     public AuthenticationController(AuthenticationManager authenticationManager,
@@ -48,11 +46,11 @@ public class AuthenticationController {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(requestDto.getUsername(), requestDto.getPassword()));
             User user = userService.findByUsername(requestDto.getUsername());
             if (user == null) {
-                LOGGER.error(USER_WITH_USERNAME_MESSAGE + requestDto.getUsername() + NOT_FOUND_MESSAGE);
-                throw new UsernameNotFoundException(USER_WITH_USERNAME_MESSAGE+ requestDto.getUsername() + NOT_FOUND_MESSAGE);
+                LOGGER.error("User with username: " + requestDto.getUsername() + " not found");
+                throw new UsernameNotFoundException("User with username: " + requestDto.getUsername() + " not found");
             }
             String token = jwtTokenProvider.createToken(requestDto.getUsername(), user.getUserRole());
-            Map<Object, Object> response = new HashMap<>();
+            Map<String, String> response = new HashMap<>();
             response.put("token", token);
             return ResponseEntity.ok(response);
         } catch (AuthenticationException e) {

@@ -1,10 +1,18 @@
 package com.example.dmc.service;
 
 import com.example.dmc.entity.Algorithm;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface AlgorithmService {
 
-    List<Algorithm> create(List<Algorithm> algorithms);
+    Algorithm create(List<MultipartFile> files,
+                     List<String> inputType,
+                     List<String> outputType,
+                     String name) throws IOException;
+    Algorithm create(Algorithm algorithm);
+
+    boolean algorithmExists(Algorithm algorithm);
 }
